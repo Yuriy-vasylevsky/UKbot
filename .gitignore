@@ -41,3 +41,34 @@ creds.json
 *.json
 
 
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+env/
+venv/
+ENV/
+VENV/
+*.env
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Credentials
+credentials.json
+token.json
+
+# Logs
+*.log
+
+# Aiogram states (якщо зберігаються локально)
+*.db
+
+# Google Auth
+*.pickle
