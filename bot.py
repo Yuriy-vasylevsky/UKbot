@@ -1,4 +1,4 @@
-
+# python bot.py
 import asyncio
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.types import Message
@@ -6,21 +6,20 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.enums import ParseMode
-
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-
 from aiogram import Bot
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
-BOT_TOKEN = "8371853976:AAGxedICmLKYvjxSeQqBiZn_N95Hv0hrA1I"
-CHANNEL_ID = -1002575438586  # ID твого каналу (числовий)
-CHANNEL_USERNAME = "ukzbir"  # без @ — коротке ім'я твого каналу
-
-# Посилання на оплату (банк збору)
-PAYMENT_LINK = "https://your-payment-link.example.com"
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
+CHANNEL_USERNAME = "ukzbir"  
+PAYMENT_LINK = "https://send.monobank.ua/jar/8213RMymLZ"
 
 # Google Sheets setup
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -54,9 +53,9 @@ def generate_certificate_number():
 @dp.message(F.text == "/start")
 async def start(message: Message, state: FSMContext):
     await message.answer(
-        "Привіт! Це бот для збору на благодійність.\n\n"
-        "Ми збираємо кошти для важливої справи, будь ласка, допоможи нам.\n\n"
-        "Для початку введи своє ім’я:"
+        "🇺🇦 Привіт! Це бот У-Кварталу, за допомогою якого ми збираємо 200 000 грн на ремонт лікарняних палат у військовому госпіталі 🏥✨\n\n"
+        "💛 За твій донат від 500 грн ти автоматично отримуєш сертифікат 🎟️ на повний день в U-Wellness Space 🧖‍♂️🌿\n\n"
+        "Для початку введи своє ім’я: 📝😊"
     )
     await state.set_state(Form.name)
 
@@ -71,7 +70,7 @@ async def get_name(message: Message, state: FSMContext):
 @dp.message(Form.surname)
 async def get_surname(message: Message, state: FSMContext):
     await state.update_data(surname=message.text)
-    await message.answer("Введи номер телефону (у форматі +380XXXXXXXXX):")
+    await message.answer("Введіть номер телефону:")
     await state.set_state(Form.phone)
 
 # Отримання телефону і надсилання посилання на оплату
@@ -79,9 +78,9 @@ async def get_surname(message: Message, state: FSMContext):
 async def get_phone(message: Message, state: FSMContext):
     await state.update_data(phone=message.text)
     await message.answer(
-        f"Дякую! Ось посилання для оплати збору:\n\n"
-        f"<a href='{PAYMENT_LINK}'>Оплатити тут</a>\n\n"
-        "Після оплати надішли, будь ласка, скріншот підтвердження оплати."
+        f"💳 <b>Дякуємо за готовність підтримати!</b>\n\n"
+        f"Ось посилання для оплати збору:\n👉 <a href='{PAYMENT_LINK}'>Оплатити тут</a>\n\n"
+        "✅ Після оплати, будь ласка, <b>надішли скріншот</b> з підтвердженням переказу 🙏"
     )
     await state.set_state(Form.proof)
 
@@ -118,9 +117,11 @@ async def process_proof(message: Message, state: FSMContext):
 
     # Відповідаємо користувачу з номером сертифікату і посиланням
     await message.answer(
-        f"Дякуємо за участь у благодійному зборі! 💙💛\n"
-        f"Ваш номер сертифікату: <b>{cert_number}</b>\n"
-        
+        f"{name}, дякуємо за участь у благодійному зборі!\n\n"
+        f"💙💛 Твоя підтримка — це крок до перемоги й турботи про наших захисників!\n\n"
+        f"🎫 Ваш номер сертифікату:🎉<b>{cert_number}</b>🎉\n\n"
+        f"📍  Отримати сертифікат можна у U-Wellness Space з 29 серпня\n"
+        f"🗓️ Використати його можна впродовж вересня у будь-який день!\n\n"
     )
     await state.clear()
 
