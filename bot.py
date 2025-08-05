@@ -22,9 +22,38 @@ CHANNEL_USERNAME = "ukzbir"
 PAYMENT_LINK = "https://send.monobank.ua/jar/8213RMymLZ"
 
 # Google Sheets setup
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-credentials = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+
+# scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+# credentials = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+# client = gspread.authorize(credentials)
+# sheet = client.open("UKbot").sheet1
+
+import os
+import json
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+
+# Скоупи для доступу до Google Sheets та Google Drive
+scope = [
+    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/drive"
+]
+
+# Отримуємо JSON зі змінної середовища
+creds_json = os.getenv("GOOGLE_CREDS_JSON")
+if creds_json is None:
+    raise ValueError("GOOGLE_CREDS_JSON змінна не встановлена!")
+
+# Завантажуємо JSON як словник
+creds_dict = json.loads(creds_json)
+
+# Створюємо credentials з dict
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+
+# Авторизуємось через gspread
 client = gspread.authorize(credentials)
+
+# Відкриваємо таблицю
 sheet = client.open("UKbot").sheet1
 
 # FSM для збору даних
