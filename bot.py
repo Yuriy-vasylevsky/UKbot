@@ -18,7 +18,7 @@ load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
-CHANNEL_USERNAME = "ukzbir"  
+CHANNEL_USERNAME = "+H_Gem2w733JlOWYy"  
 PAYMENT_LINK = "https://send.monobank.ua/jar/8213RMymLZ"
 
 # Google Sheets setup
